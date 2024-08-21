@@ -88,8 +88,6 @@ def compress_file():
             for item in compressed_data:
                 outfile.write(f"{item}\n")  # Write as text
 
-
-
     print(f"Compressed data has been written to '{output_file_path}'.")
 
 def decompress_file():
