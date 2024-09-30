@@ -1,14 +1,15 @@
 import matplotlib.pyplot as plt
-import numpy as np
 
+from DifferentialPrivacy.LaplaceMechanism import LaplaceMechanism
 
-def plot():
-    x = np.linspace(-10, 10, 100)
-    y = np.sin(x)
-    plt.plot(x, y)
+def plot(n_values,pad_length_per_n,pad_length_per_n_p, x_label, y_label,label1,label2,title):
+
+    plt.plot(n_values, pad_length_per_n, label=label1)
+    plt.plot(n_values, pad_length_per_n_p, label=label2)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.title(title)
+    plt.legend()
+    plt.grid(True)
     plt.show()
-    # xpoints = np.array([1, 8])
-    # ypoints = np.array([3, 10])
-
-    # plt.plot(xpoints, ypoints)
-    # plt.show()
+    

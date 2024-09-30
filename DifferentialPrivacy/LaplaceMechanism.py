@@ -9,14 +9,20 @@ class LaplaceMechanism:
 
     def add_noise(self, x):
         Z=x + np.random.laplace(0, self.global_sensitivity / self.epsilon)
+        k = self.k(global_sensitivity=1,epsilon=1,delta=1)
+        p = self.p(Z,k)
+        padding = self.pad(self.compression,p)
+        return padding
+
+
         return Z
     
-    def k(global_sensitivity, epsilon,delta):
+    def k(self,global_sensitivity, epsilon,delta):
         return (global_sensitivity / epsilon) * np.log(0.5* delta)+ global_sensitivity +1
     
-    def p(Z,k):
+    def p(self,Z,k):
         return max(1,(Z+k))
     
-    def padding():
-        return "this would be the padding function"
+    def pad(self,compression,p):
+        return compression + p
     
