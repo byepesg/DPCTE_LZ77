@@ -71,22 +71,22 @@ if __name__ == "__main__":
     print(f"Output file changed size: {file_output_changed_size} bytes")
     print(f"Compression ratio: {file_output_changed_size-file_output_size}")
     global_sensitivity = file_output_changed_size-file_output_size
-    
+    store_values=[{global_sensitivity:global_sensitivity}]
     LMw= LaplaceMechanism(global_sensitivity=global_sensitivity,epsilon=1,delta=1,compression=file_input_size).add_noise(1)
     print (f"LM(w): {LMw}")
     LMwp= LaplaceMechanism(global_sensitivity=global_sensitivity,epsilon=1,delta=1,compression=file_input_changed_size).add_noise(1)
     print (f"LM(w'): {LMwp}")
     
 
-    # Valores de n
-    n_values = np.arange(1, file_output_size)  # Por ejemplo, n va de 1 a 100
-    n_values_p = np.arange(1, file_output_changed_size)  # Por ejemplo, n va de 1 a 100
+    # n-values
+    n_values = np.arange(1, file_output_size)  
+    n_values_p = np.arange(1, file_output_changed_size) 
 
-    # Calcular pad_length para cada valor de n
+    # Compute pad_length for each n value
     pad_length_values = np.array([LaplaceMechanism(global_sensitivity=global_sensitivity,epsilon=1,delta=1,compression=n).add_noise(1) for n in n_values])
     pad_length_values_p = np.array([LaplaceMechanism(global_sensitivity=global_sensitivity,epsilon=1,delta=1,compression=n).add_noise(1) for n in n_values_p])
-    # Calcular pad_length/n para cada n
+    # compute pad_lenght/n
     pad_length_per_n = pad_length_values / n_values
     pad_length_per_n_p = pad_length_values_p / n_values
-    plot(n_values,pad_length_per_n,pad_length_per_n_p,"n", "pad_length/n","Compress(w): (pad_length)/n vs n","Compress(w'): (pad_length)/n vs n","Compress(w) vs Compress(w')") 
+    plot(n_values,pad_length_per_n,pad_length_per_n_p,"n", "pad_length/n","Compress(w): (pad_length)/n vs n","Compress(w'): (pad_length)/n vs n","Compress(w) vs Compress(w')",store_values) 
     

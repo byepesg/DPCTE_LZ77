@@ -1,4 +1,5 @@
 import numpy as np
+import math
 class LaplaceMechanism:
     def __init__(self, global_sensitivity, epsilon,delta,compression):
         self.global_sensitivity = global_sensitivity
@@ -10,7 +11,8 @@ class LaplaceMechanism:
     def add_noise(self, x):
         Z=x + np.random.laplace(0, self.global_sensitivity / self.epsilon)
         k = self.k(global_sensitivity=1,epsilon=1,delta=1)
-        p = self.p(Z,k)
+        p = math.ceil(self.p(Z,k))
+
         padding = self.pad(self.compression,p)
         return padding
 
