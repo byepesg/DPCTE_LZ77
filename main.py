@@ -5,6 +5,8 @@ from utils.file_operations import get_algorithm
 from DifferentialPrivacy.LaplaceMechanism import LaplaceMechanism
 from Plotting.plot import plot
 import numpy as np
+import math
+import matplotlib.pyplot as plt
 class CompressionAlgorithms:
     def __init__(self, algorithm):
         self.algorithm = algorithm
@@ -70,8 +72,8 @@ if __name__ == "__main__":
     print(f"Input file changed size: {file_input_changed_size} bytes")
     print(f"Output file size: {file_output_size} bytes")
     print(f"Output file changed size: {file_output_changed_size} bytes")
-    print(f"Global sensitivity: {file_output_changed_size-file_output_size}")
-    global_sensitivity = file_output_changed_size-file_output_size
+   
+    global_sensitivity = file_input_size**(2/3)*np.log(file_input_size)
     store_values = [
         {
             "global_sensitivity": global_sensitivity, 
@@ -79,23 +81,31 @@ if __name__ == "__main__":
             "file_output_changed_size": file_output_changed_size
         }
     ]
-    LMw= LaplaceMechanism(global_sensitivity=global_sensitivity,epsilon=1,delta=1,compression=file_input_size).add_noise(1)
-    print (f"LM(w): {LMw}")
-    LMwp= LaplaceMechanism(global_sensitivity=global_sensitivity,epsilon=1,delta=1,compression=file_input_changed_size).add_noise(1)
-    print (f"LM(w'): {LMwp}")
+    LMw= LaplaceMechanism(epsilon=1,delta=1,n_value=file_input_size).add_noise()
     
 
-    # n-values
-    n_values = np.arange(1, file_output_size)  
-    n_values_p = np.arange(1, file_output_size) 
+    # Parameters and noise
+    n_values = np.arange(1, file_input_size)  
+    epsilon_values = np.array([0.1,0.5,1.0])
+    delta_values = np.array([10**-10,10**-7,10**-5])
 
-    # Compute pad_length for each n value
-    pad_length_values = np.array([LaplaceMechanism(global_sensitivity=global_sensitivity,epsilon=1,delta=1,compression=n).add_noise(1) for n in n_values])
-    pad_length_values_p = np.array([LaplaceMechanism(global_sensitivity=global_sensitivity,epsilon=1,delta=1,compression=n).add_noise(1) for n in n_values_p])
+    for epsilon in epsilon_values:
+        for delta in delta_values:
+            LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=file_input_changed_size**(2/3)*np.log(file_input_size)).add_noise()    
+            
+            expected_value = np.array([LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=n).add_noise() for n in n_values])
+            print(f"Expected value: {expected_value}", f"n: {n_values}"), f"epsilon: {epsilon}", f"delta: {delta}"
+            plot(n_values,expected_value,"n", "k+e^(-eps)*delta*(1-k))/n",f"Delta:{delta}, Epsilon:{epsilon}","Expected Value(PadLength) vs n",store_values) 
+            
+    plt.show()        
+            
+    
+    
+
     # compute pad_lenght/n
-    pad_length_per_n = pad_length_values / n_values
-    pad_length_per_n_p = pad_length_values_p / n_values
+    
+
 
     
-    plot(n_values,pad_length_per_n,pad_length_per_n_p,"n", "pad_length/n","Compress(w): (pad_length)/n vs n","Compress(w'): (pad_length)/n vs n","Compress(w) vs Compress(w')",store_values) 
+    
     
