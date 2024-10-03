@@ -10,17 +10,16 @@ class LaplaceMechanism:
         self.Z= 0
 
 
-    def add_noise(self):
+    def expectedValuePadLength(self):
         Z= self.zSampleLaplace(self.global_sensitivity,self.epsilon)
         k = self.k(global_sensitivity=self.global_sensitivity,epsilon=self.epsilon,delta=self.delta)
         p = math.ceil(self.p(Z,k))
-        
         expected_value = self.expectedValue(k,self.epsilon,self.delta,self.n_value)
         
         
         return expected_value
     
-
+    
 
     def expectedValue(self,k,epsilon,delta,n):
         return (k+((np.exp(-epsilon))*delta*(1-k)))/n

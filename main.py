@@ -81,7 +81,7 @@ if __name__ == "__main__":
             "file_output_changed_size": file_output_changed_size
         }
     ]
-    LMw= LaplaceMechanism(epsilon=1,delta=1,n_value=file_input_size).add_noise()
+    LMw= LaplaceMechanism(epsilon=1,delta=1,n_value=file_input_size).expectedValuePadLength()
     
 
     # Parameters and noise
@@ -91,9 +91,9 @@ if __name__ == "__main__":
 
     for epsilon in epsilon_values:
         for delta in delta_values:
-            LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=file_input_changed_size**(2/3)*np.log(file_input_size)).add_noise()    
+            LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=file_input_changed_size**(2/3)*np.log(file_input_size)).expectedValuePadLength()    
             
-            expected_value = np.array([LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=n).add_noise() for n in n_values])
+            expected_value = np.array([LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=n).expectedValuePadLength() for n in n_values])
             print(f"Expected value: {expected_value}", f"n: {n_values}"), f"epsilon: {epsilon}", f"delta: {delta}"
             plot(n_values,expected_value,"n", "k+e^(-eps)*delta*(1-k))/n",f"Delta:{delta}, Epsilon:{epsilon}","Expected Value(PadLength) vs n",store_values) 
             
