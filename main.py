@@ -68,35 +68,40 @@ if __name__ == "__main__":
     else:
         print("Invalid choice.")
 
-    print(f"Input file size: {file_input_size} bytes")
+    print(f"\n Input file size: {file_input_size} bytes")
     print(f"Input file changed size: {file_input_changed_size} bytes")
     print(f"Output file size: {file_output_size} bytes")
     print(f"Output file changed size: {file_output_changed_size} bytes")
    
-    global_sensitivity = file_input_size**(2/3)*np.log(file_input_size)
-    store_values = [
-        {
-            "global_sensitivity": global_sensitivity, 
-            "file_output_size": file_output_size, 
-            "file_output_changed_size": file_output_changed_size
-        }
-    ]
-    LMw= LaplaceMechanism(epsilon=1,delta=1,n_value=file_input_size).expectedValuePadLength()
-    
 
     # Parameters and noise
     n_values = np.arange(1, file_input_size)  
     epsilon_values = np.array([0.1,0.5,1.0])
     delta_values = np.array([10**-10,10**-7,10**-5])
-
+    noise=[]
     for epsilon in epsilon_values:
         for delta in delta_values:
-            LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=file_input_changed_size**(2/3)*np.log(file_input_size)).expectedValuePadLength()    
-            
+                 
+            noise.append({"n":file_input_size,"epsilon":epsilon, "delta":delta, "p":LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=file_input_size).p()})
             expected_value = np.array([LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=n).expectedValuePadLength() for n in n_values])
-            print(f"Expected value: {expected_value}", f"n: {n_values}"), f"epsilon: {epsilon}", f"delta: {delta}"
-            plot(n_values,expected_value,"n", "k+e^(-eps)*delta*(1-k))/n",f"Delta:{delta}, Epsilon:{epsilon}","Expected Value(PadLength) vs n",store_values) 
+            #print(f"Expected value: {expected_value}", f"n: {n_values}"), f"epsilon: {epsilon}", f"delta: {delta}"
+            condition = expected_value < n_values/4
+            first_index = np.where(condition)[0][0]
             
+            print(f"First index: {first_index}, Expected value: {expected_value[first_index]}, n: {n_values[first_index]}")
+            plt.scatter(n_values[first_index], expected_value[first_index], color='red', zorder=5)
+            plt.plot(n_values, expected_value, label=f"Delta:{delta}, Epsilon:{epsilon}" )
+            plt.xlabel("n")
+            plt.ylabel("k+e^(-eps)*delta*(1-k))/n")
+            plt.title("Expected Value(PadLength) vs n")
+            plt.legend()
+            plt.grid(True)
+            #plot(n_values,expected_value,"n", "k+e^(-eps)*delta*(1-k))/n",f"Delta:{delta}, Epsilon:{epsilon}","Expected Value(PadLength) vs n") 
+            
+    #print(f"p:{lm.p},epsilon:{epsilon},delta:{delta},p:{p},n:{file_input_size}")       
+
+    for i in range(len(noise)):
+        print(f"p:{noise[i]['p']},epsilon:{noise[i]['epsilon']},delta:{noise[i]['delta']},n:{noise[i]['n']}")
     plt.show()        
             
     
