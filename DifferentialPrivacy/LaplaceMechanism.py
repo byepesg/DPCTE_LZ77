@@ -11,6 +11,8 @@ class LaplaceMechanism:
     def expectedValuePadLength(self):
         k = self.k(global_sensitivity=self.globalSensitivity(self.n_value),epsilon=self.epsilon,delta=self.delta)
         expected_value = self.expectedValue(k,self.epsilon,self.delta,self.n_value)    
+        if(self.n_value==100):
+            print("k====",k)
         return expected_value
 
     def globalSensitivity(self,n):

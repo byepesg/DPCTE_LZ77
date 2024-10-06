@@ -79,9 +79,11 @@ if __name__ == "__main__":
     epsilon_values = np.array([0.1,0.5,1.0])
     delta_values = np.array([10**-10,10**-7,10**-5])
     noise=[]
+    LaplaceMechanism(epsilon=0.1,delta=10**-10,n_value=100).expectedValuePadLength()
+    
     for epsilon in epsilon_values:
         for delta in delta_values:
-                 
+            
             noise.append({"n":file_input_size,"epsilon":epsilon, "delta":delta, "p":LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=file_input_size).p()})
             expected_value = np.array([LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=n).expectedValuePadLength() for n in n_values])
             #print(f"Expected value: {expected_value}", f"n: {n_values}"), f"epsilon: {epsilon}", f"delta: {delta}"
