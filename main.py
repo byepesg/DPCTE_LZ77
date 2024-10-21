@@ -21,7 +21,7 @@ class CompressionAlgorithms:
                     break
                 compressed_data, window = self.algorithm.compress(chunk, window)
                 for item in compressed_data:
-                    outfile.write(f"{item}\n")
+                    outfile.write(f"{item} \n")
 
     def decompress_file(self, input_file_path, output_file_path):
         compressed_data = []
@@ -34,71 +34,89 @@ class CompressionAlgorithms:
         with open(output_file_path, 'wb') as outfile:
             outfile.write(decompressed_data)
 
-if __name__ == "__main__":
-    algorithm_name = input("Type your algorithm: ").strip().lower()
-    algorithm = get_algorithm(algorithm_name)
-    
-    compression_system = CompressionAlgorithms(algorithm)
-    
-    choice = input("Enter 'c' for compression or 'd' for decompression: ").strip().lower()
-    input_file_name = input("Input file name: ")
-    input_file_name_changed = input("Input file name changed: ")
-    output_file_name = input("Output file name: ")
-    output_file_name_changed = input("Output file name changed: ")
+    def runCompression():
+        algorithm_name = input("Type your algorithm: ").strip().lower()
+        algorithm = get_algorithm(algorithm_name)
+        
+        compression_system = CompressionAlgorithms(algorithm)
+        
+        choice = input("Enter 'c' for compression or 'd' for decompression: ").strip().lower()
+        input_file_name = input("Input file name: ")
+        input_file_name_changed = input("Input file name changed: ")
+        output_file_name = input("Output file name: ")
+        output_file_name_changed = input("Output file name changed: ")
 
-    input_file_path = os.path.join("Input", input_file_name)
-    input_file_changed_path = os.path.join("Input", input_file_name_changed)
-    file_input_size = os.path.getsize(input_file_path)
-    file_input_changed_size = os.path.getsize(input_file_changed_path)
+        input_file_path = os.path.join("Input", input_file_name)
+        input_file_changed_path = os.path.join("Input", input_file_name_changed)
+        file_input_size = os.path.getsize(input_file_path)
+        file_input_changed_size = os.path.getsize(input_file_changed_path)
 
-    output_file_path = os.path.join("Output", output_file_name)
-    output_file_changed_path = os.path.join("Output", output_file_name_changed)
-    
-
-    if choice == 'c':
-        compression_system.compress_file(input_file_path, output_file_path)
-        compression_system.compress_file(input_file_changed_path, output_file_changed_path)
-        file_output_size = os.path.getsize(output_file_path)
-        file_output_changed_size = os.path.getsize(output_file_changed_path)
+        output_file_path = os.path.join("Output", output_file_name)
+        output_file_changed_path = os.path.join("Output", output_file_name_changed)
         
 
-    elif choice == 'd':
-        compression_system.decompress_file(input_file_path, output_file_path)
-        compression_system.decompress_file(input_file_changed_path, output_file_changed_path)
-    else:
-        print("Invalid choice.")
+        if choice == 'c':
+            compression_system.compress_file(input_file_path, output_file_path)
+            compression_system.compress_file(input_file_changed_path, output_file_changed_path)
+            file_output_size = os.path.getsize(output_file_path)
+            file_output_changed_size = os.path.getsize(output_file_changed_path)
+            
 
-    print(f"\n Input file size: {file_input_size} bytes")
-    print(f"Input file changed size: {file_input_changed_size} bytes")
-    print(f"Output file size: {file_output_size} bytes")
-    print(f"Output file changed size: {file_output_changed_size} bytes")
-   
+        elif choice == 'd':
+            compression_system.decompress_file(input_file_path, output_file_path)
+            compression_system.decompress_file(input_file_changed_path, output_file_changed_path)
+        else:
+            print("Invalid choice.")
 
-    # Parameters and noise
-    n_values = np.arange(1, file_input_size)  
-    epsilon_values = np.array([0.1,0.5,1.0])
-    delta_values = np.array([10**-10,10**-7,10**-5])
-    noise=[]
-    LaplaceMechanism(epsilon=0.1,delta=10**-10,n_value=100).expectedValuePadLength()
+        print(f"\n Input file size: {file_input_size} bytes")
+        print(f"Input file changed size: {file_input_changed_size} bytes")
+        print(f"Output file size: {file_output_size} bytes")
+        print(f"Output file changed size: {file_output_changed_size} bytes")
+
+if __name__ == "__main__":
     
-    for epsilon in epsilon_values:
-        for delta in delta_values:
-            
-            noise.append({"n":file_input_size,"epsilon":epsilon, "delta":delta, "p":LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=file_input_size).p()})
-            expected_value = np.array([LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=n).expectedValuePadLength() for n in n_values])
-            #print(f"Expected value: {expected_value}", f"n: {n_values}"), f"epsilon: {epsilon}", f"delta: {delta}"
-            condition = expected_value < n_values/4
-            first_index = np.where(condition)[0][0]
-            
-            print(f"First index: {first_index}, Expected value: {expected_value[first_index]}, n: {n_values[first_index]}")
-            plt.scatter(n_values[first_index], expected_value[first_index], color='red', zorder=5)
-            plt.plot(n_values, expected_value, label=f"Delta:{delta}, Epsilon:{epsilon}" )
-            plt.xlabel("n")
-            plt.ylabel("k+e^(-eps)*delta*(1-k))/n")
-            plt.title("Expected Value(PadLength) vs n")
-            plt.legend()
-            plt.grid(True)
-            #plot(n_values,expected_value,"n", "k+e^(-eps)*delta*(1-k))/n",f"Delta:{delta}, Epsilon:{epsilon}","Expected Value(PadLength) vs n") 
+   
+    file_input_size = 70000000
+    # Parameters and noise
+    n_values = np.arange(1, file_input_size)
+    print(f"file_input_size: {file_input_size}")  
+    #epsilon_values = np.array([0.1,0.5,1.0])
+    epsilon_values = np.array([1])
+    #delta_values = np.array([10**-10,10**-7,10**-5,10**-3,10**-1])
+    #delta_values = np.array([10**-4])
+    #delta_values = np.array([10**-7])
+    #delta_values = np.array([10**-5])
+    delta_values = np.array([10**-3])
+    noise=[]
+    expected_value = []
+    #LaplaceMechanism(epsilon=0.1,delta=10**-10,n_value=100).expectedValuePadLength()
+    with open('Values.txt', 'w') as file:
+        for epsilon in epsilon_values:
+            for delta in delta_values:
+                noise.append({"n":file_input_size,"epsilon":epsilon, "delta":delta, "p":LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=file_input_size).p()})
+                expected_value = np.array([LaplaceMechanism(epsilon=epsilon,delta=delta,n_value=n).expectedValuePadLength()*(1/n) for n in n_values])
+                #print(f"Expected value: {expected_value}", f"n: {n_values}"), f"epsilon: {epsilon}", f"delta: {delta}"
+                indices = np.where(expected_value < 1)
+                first_index_x = indices
+                
+                # for i in range(1, len(expected_value)):
+                #     if expected_value[i] < expected_value[i - 1]:  # Check when the value decreases
+                #         print(f"Function starts decreasing at index {i}, value {expected_value[i]}")
+                #         break
+                
+                if len(first_index_x[0]) != 0:
+                    first_index = first_index_x[0][0]
+                    #file.write(f"First index: {first_index}, Expected value: {expected_value}, n: {n_values[first_index]} \n")
+                    file.write(f"First index: {first_index_x[0][0]} \n")
+                    plt.scatter(n_values[first_index], expected_value[first_index], color='red', zorder=5)
+                plt.plot(n_values, expected_value, label=f"Delta:{delta}, Epsilon:{epsilon}" )
+                plt.axhline(y=1, color='r', linestyle='--', label='y = 1')
+                plt.xlabel("n")
+                plt.ylabel("k+GS/(eps)*delta*e^(-eps))/n")
+                plt.title("Expected Value(PadLength)/n vs n")
+                plt.legend()
+                plt.grid(True)
+                    #plot(n_values,expected_value,"n", "k+e^(-eps)*delta*(1-k))/n",f"Delta:{delta}, Epsilon:{epsilon}","Expected Value(PadLength) vs n") 
             
     #print(f"p:{lm.p},epsilon:{epsilon},delta:{delta},p:{p},n:{file_input_size}")       
 
