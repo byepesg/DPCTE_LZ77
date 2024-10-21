@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from scipy.stats import bootstrap
 class LaplaceMechanism:
     def __init__(self,  epsilon,delta,n_value):
         
